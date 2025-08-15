@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24G84" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Lists" representedClassName="Lists" syncable="YES">
+        <attribute name="listID" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Notes" representedClassName="Notes" parentEntity="Lists" syncable="YES">
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="notesID" optional="YES" attributeType="String"/>
+        <attribute name="noteTitle" optional="YES" attributeType="String"/>
+    </entity>
 </model>
