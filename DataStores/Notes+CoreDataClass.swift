@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 
 @objc(Notes)
-public class Notes: Lists {
+public class Notes: Lists
+{
 
 }

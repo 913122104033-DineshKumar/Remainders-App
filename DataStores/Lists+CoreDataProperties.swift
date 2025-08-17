@@ -17,6 +17,8 @@ extension Lists {
     }
 
     @NSManaged public var listID: String?
+    @NSManaged public var listImageName: String?
+    @NSManaged public var noteIDs: [String]?
 
 }
 

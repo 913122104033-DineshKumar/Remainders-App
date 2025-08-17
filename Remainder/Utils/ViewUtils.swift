@@ -6,13 +6,14 @@ class ViewUtils
         labelContent text: String,
         fontSize: CGFloat,
         color: UIColor,
+        isBold: Bool,
         isFrame constraintPreference: Bool
     ) -> UILabel
     {
         let label = UILabel()
         
         label.text = text
-        label.font = .systemFont(ofSize: fontSize, weight: .bold)
+        label.font = .systemFont(ofSize: fontSize, weight: isBold ? .bold : .medium)
         label.textColor = color
         label.translatesAutoresizingMaskIntoConstraints = constraintPreference
         
@@ -63,16 +64,21 @@ class ViewUtils
     
     public static func prepareButtonView(
         buttonTitle title: String,
-        isFrame constraintPreference: Bool,
-        backgroundColor bgColor: UIColor
+        backgroundColor bgColor: UIColor,
+        textColor: UIColor,
+        fontSize: CGFloat?,
+        cornerRadius: CGFloat?,
+        isBold: Bool,
+        isCustomButton: Bool,
+        isFrame constraintPreference: Bool
     ) -> UIButton
     {
-        let button = UIButton()
-        
+        let button = UIButton(type: isCustomButton ? .custom : .system)
         button.setTitle(title, for: .normal)
-        button.layer.cornerRadius = 10
+        button.setTitleColor(textColor, for: .normal)
+        button.layer.cornerRadius = cornerRadius ?? 12
         button.backgroundColor = bgColor
-        button.titleLabel?.textColor = .white
+        button.titleLabel?.font = .systemFont(ofSize: fontSize ?? 12, weight: isBold ? .bold : .medium)
         button.translatesAutoresizingMaskIntoConstraints = constraintPreference
         
         return button
@@ -101,6 +107,7 @@ class ViewUtils
         stackView.spacing = space
         stackView.translatesAutoresizingMaskIntoConstraints = constraintPreference
         stackView.backgroundColor = bgColor
+        stackView.distribution = .fillEqually
         stackView.layer.cornerRadius = cornerRadius ?? 0
         
         return stackView
@@ -117,6 +124,7 @@ class ViewUtils
         view.translatesAutoresizingMaskIntoConstraints = constraintPreference
         view.layer.cornerRadius = cornerRadius ?? 0
         view.backgroundColor = bgColor
+        view.clipsToBounds = false
         
         return view
     }
@@ -124,7 +132,7 @@ class ViewUtils
     public static func prepareImageView(
         image: UIImage?,
         cornerRadius: CGFloat,
-        color: UIColor,
+        color: UIColor?,
         isFrame constraintPreference: Bool
     ) -> UIImageView
     {
@@ -133,9 +141,22 @@ class ViewUtils
         imageView.image = image
         imageView.layer.cornerRadius = cornerRadius
         imageView.translatesAutoresizingMaskIntoConstraints = constraintPreference
-        imageView.setImageColor(color: color)
+        imageView.setImageColor(color: color ?? .systemBlue)
         
         return imageView
+    }
+    
+    public static func prepareScrollView(
+        edgeInsets: UIEdgeInsets,
+        isFrame contentPreference: Bool
+    ) -> UIScrollView
+    {
+        let scrollView = UIScrollView()
+        
+        scrollView.contentInset = edgeInsets
+        scrollView.translatesAutoresizingMaskIntoConstraints = contentPreference
+        
+        return scrollView
     }
 }
 

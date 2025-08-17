@@ -2,6 +2,8 @@ import UIKit
 
 class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
 {
+    open var delegate: NoteDelegate?
+    
     private lazy var notesCreationView: UIView = UIView()
     private lazy var listSelectionView: UIView = UIView()
 
@@ -34,14 +36,13 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
             target: self,
             action: #selector(addRemainderAction)
         )
-        
         self.navigationItem.rightBarButtonItem?.isEnabled = false
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(
             title: "Cancel",
             style: .plain,
             target: self,
-            action: #selector(addRemainderAction)
+            action: #selector(cancelAction)
         )
     }
     
@@ -63,6 +64,7 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
             isFrame: false
         )
         self.noteTitleField.delegate = self
+        self.noteTitleField.becomeFirstResponder()
         self.notesCreationView.addSubview(self.noteTitleField)
         
         self.notesCreationView.addSubview(self.viewSeparator)
@@ -96,6 +98,7 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
             labelContent: "List",
             fontSize: 16,
             color: .black,
+            isBold: true,
             isFrame: false
         )
         self.listSelectionView.addSubview(self.listLabel)
@@ -104,6 +107,7 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
             labelContent: "Remainders",
             fontSize: 16,
             color: .lightGray,
+            isBold: true,
             isFrame: false
         )
         self.listSelectionView.addSubview(self.listNameLabel)
@@ -180,22 +184,83 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
 // Actions done on Tap.
 extension AddNotesViewController
 {
+    
     @objc private func addRemainderAction()
     {
+        guard let noteTitle = self.noteTitleField.text else { return }
         
+        if !DataUtils.notMatches(pattern: "[a-zA-Z0-9/s]+", text: noteTitle)
+        {
+            let content: String = self.noteContentView.text == "Notes" ? "" : self.noteContentView.text
+            self.delegate?.receiveNotesData(noteTitle, content, "")
+            self.dismiss(animated: true)
+        } else
+        {
+            DataUtils.showToast(
+                message: "Title is invalid",
+                view: self.view
+            )
+        }
+        
+    }
+    
+    @objc private func cancelAction()
+    {
+        if self.noteTitleField.text?.isEmpty == true && self.noteContentView.text == "Notes"
+        {
+            self.dismiss(animated: true)
+            return
+        }
+        
+        let stackView = ConfirmationViewController.stackView
+        
+        let discardChangesButton = ConfirmationViewController.discardChangesButton
+        discardChangesButton.addAction(
+            UIAction { action in
+                UIView.animate(withDuration: 0.2, animations: {
+                    stackView.removeFromSuperview()
+                }) { _ in
+                    self.dismiss(animated: true)
+                }
+            },
+            for: .touchUpInside
+        )
+        
+        let cancelButton = ConfirmationViewController.cancelButton
+        cancelButton.addAction(
+            UIAction { action in
+                stackView.removeFromSuperview()
+            },
+            for: .touchUpInside
+        )
+
+        stackView.addArrangedSubview(discardChangesButton)
+        stackView.addArrangedSubview(cancelButton)
+        
+        self.view.addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            stackView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            stackView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: self.view.bounds.width * 0.02),
+            stackView.widthAnchor.constraint(equalToConstant: self.view.bounds.width * 0.95),
+            stackView.heightAnchor.constraint(equalToConstant: 110),
+            
+            discardChangesButton.widthAnchor.constraint(equalTo: stackView.widthAnchor),
+            discardChangesButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            cancelButton.widthAnchor.constraint(equalTo: stackView.widthAnchor),
+            
+        ])
     }
     
     @objc private func showListAction()
     {
         UIView.animate(withDuration: 0.5, animations: {
-            self.listSelectionView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-        }) { _ in
-            UIView.animate(withDuration: 0.5) {
-                self.listSelectionView.transform = CGAffineTransform.identity
-            }
-        }
-        
+            self.listSelectionView.backgroundColor = .systemGray5
+            
+        }) 
     }
+    
 }
 
 extension AddNotesViewController: UITextFieldDelegate
