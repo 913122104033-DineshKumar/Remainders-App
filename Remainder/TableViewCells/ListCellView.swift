@@ -78,39 +78,53 @@ class ListCellView: UITableViewCell
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setListPageUI()
+    public func setListPageUI()
     {
         guard let image = self.listImage,
               let label = self.listName,
               let count = self.countLabel else { return }
         
+        self.contentView.addSubview(image)
+        self.contentView.addSubview(label)
+        self.contentView.addSubview(count)
+        self.contentView.addSubview(self.rightArrowView)
+        
         NSLayoutConstraint.activate([
         
-            image.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20),
+            image.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10),
             image.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20),
             image.heightAnchor.constraint(equalToConstant: 30),
             image.widthAnchor.constraint(equalToConstant: 30),
             
-            label.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20),
+            label.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10),
             label.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 30),
             
-            count.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20),
-            count.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
+            count.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10),
+            count.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -50),
             
-            self.rightArrowView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20),
-            self.rightArrowView.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -20),
+            self.rightArrowView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 13),
+            self.rightArrowView.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
             self.rightArrowView.heightAnchor.constraint(equalToConstant: 16),
+            self.rightArrowView.widthAnchor.constraint(equalToConstant: 16),
             
         ])
         
     }
     
-    private func setEditPageUI()
+    public func setEditPageUI()
     {
         
         guard let image = self.listImage,
               let label = self.listName,
-              let count = self.countLabel else { return }
+              let _ = self.countLabel else { return }
+        
+        self.contentView.addSubview(self.deleteIcon)
+        self.contentView.addSubview(image)
+        self.contentView.addSubview(label)
+        self.contentView.addSubview(self.editButton)
+        self.contentView.addSubview(self.verticalCrossBar)
+        self.contentView.addSubview(self.reorderImage)
+        self.contentView.addSubview(self.deleteButton)
         
         NSLayoutConstraint.activate([
         

@@ -192,7 +192,7 @@ extension AddNotesViewController
         if !DataUtils.notMatches(pattern: "[a-zA-Z0-9/s]+", text: noteTitle)
         {
             let content: String = self.noteContentView.text == "Notes" ? "" : self.noteContentView.text
-            self.delegate?.receiveNotesData(noteTitle, content, "")
+            self.delegate?.receiveNotesData(noteTitle, content, "LISTS1")
             self.dismiss(animated: true)
         } else
         {

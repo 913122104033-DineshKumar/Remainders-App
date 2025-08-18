@@ -2,11 +2,11 @@ import CoreData
 
 class CoreModelHandler
 {
-    public static func fetchAllData<Entity>(fetchController: NSFetchedResultsController<Entity>)
+    public static func fetchAllData<Entity>(fetchController: NSFetchedResultsController<Entity>?)
     {
         do
         {
-            try fetchController.performFetch()
+            try fetchController?.performFetch()
         } catch
         {
             print("Data is not being fetched")

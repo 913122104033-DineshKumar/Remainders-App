@@ -3,6 +3,15 @@ import UIKit
 
 class DataUtils
 {
+    
+    public static var taskCategories: [String: TaskCategoryModel] = [
+        "Today": TaskCategoryModel(title: "Today", noOfTasks: nil, iconName: "calendar.badge.plus", iconColor: .systemBlue),
+        "Scheduled": TaskCategoryModel(title: "Scheduled", noOfTasks: nil, iconName: "calendar.circle.fill", iconColor: .systemRed),
+        "All": TaskCategoryModel(title: "All", noOfTasks: nil, iconName: "tray.circle.fill", iconColor: nil),
+        "Flagged": TaskCategoryModel(title: "Flagged", noOfTasks: nil, iconName: "flag.circle.fill", iconColor: .systemYellow),
+        "Completed": TaskCategoryModel(title: "Completed", noOfTasks: nil, iconName: "checkmark.circle.fill", iconColor: .systemGreen)
+    ]
+    
     public static func notMatches(
         pattern: String,
         text: String

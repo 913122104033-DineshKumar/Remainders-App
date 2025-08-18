@@ -11,6 +11,8 @@
 		09F259BB2E4F28F80038D59F /* Notes+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F259B92E4F28F80038D59F /* Notes+CoreDataProperties.swift */; };
 		09F259BC2E4F28F80038D59F /* Lists+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F259B62E4F28F80038D59F /* Lists+CoreDataClass.swift */; };
 		09F259BD2E4F28F80038D59F /* Lists+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F259B72E4F28F80038D59F /* Lists+CoreDataProperties.swift */; };
+		09F25A3B2E524B0C0038D59F /* ListIem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F25A392E524B0C0038D59F /* ListIem+CoreDataClass.swift */; };
+		09F25A3C2E524B0C0038D59F /* ListIem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F25A3A2E524B0C0038D59F /* ListIem+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,9 @@
 		09F259B72E4F28F80038D59F /* Lists+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Lists+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		09F259B82E4F28F80038D59F /* Notes+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notes+CoreDataClass.swift"; sourceTree = "<group>"; };
 		09F259B92E4F28F80038D59F /* Notes+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notes+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		09F25A302E522F460038D59F /* Remainder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Remainder.xcodeproj; sourceTree = SOURCE_ROOT; };
+		09F25A392E524B0C0038D59F /* ListIem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ListIem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		09F25A3A2E524B0C0038D59F /* ListIem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ListIem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -104,6 +109,7 @@
 				09F2596B2E4E0FCF0038D59F /* RemainderTests */,
 				09F259752E4E0FD00038D59F /* RemainderUITests */,
 				09F259502E4E0FCE0038D59F /* Products */,
+				09F25A302E522F460038D59F /* Remainder.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -120,12 +126,19 @@
 		09F259BE2E4F291F0038D59F /* DataStores */ = {
 			isa = PBXGroup;
 			children = (
+				09F25A392E524B0C0038D59F /* ListIem+CoreDataClass.swift */,
 				09F259B62E4F28F80038D59F /* Lists+CoreDataClass.swift */,
 				09F259B72E4F28F80038D59F /* Lists+CoreDataProperties.swift */,
 				09F259B82E4F28F80038D59F /* Notes+CoreDataClass.swift */,
 				09F259B92E4F28F80038D59F /* Notes+CoreDataProperties.swift */,
+				09F25A3A2E524B0C0038D59F /* ListIem+CoreDataProperties.swift */,
 			);
 			path = DataStores;
+			sourceTree = "<group>";
+		};
+		09F25A772E52AED60038D59F /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -234,6 +247,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 09F259502E4E0FCE0038D59F /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 09F25A772E52AED60038D59F /* Products */;
+					ProjectRef = 09F25A302E522F460038D59F /* Remainder.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				09F2594E2E4E0FCE0038D59F /* Remainder */,
@@ -275,6 +294,8 @@
 				09F259BA2E4F28F80038D59F /* Notes+CoreDataClass.swift in Sources */,
 				09F259BB2E4F28F80038D59F /* Notes+CoreDataProperties.swift in Sources */,
 				09F259BC2E4F28F80038D59F /* Lists+CoreDataClass.swift in Sources */,
+				09F25A3B2E524B0C0038D59F /* ListIem+CoreDataClass.swift in Sources */,
+				09F25A3C2E524B0C0038D59F /* ListIem+CoreDataProperties.swift in Sources */,
 				09F259BD2E4F28F80038D59F /* Lists+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
