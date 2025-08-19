@@ -8,9 +8,10 @@
     <entity name="Lists" representedClassName="Lists" syncable="YES">
         <attribute name="listID" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="Notes" representedClassName="Notes" parentEntity="Lists" syncable="YES">
+    <entity name="Notes" representedClassName="Notes" syncable="YES">
+        <attribute name="listID" optional="YES" attributeType="String"/>
         <attribute name="notes" optional="YES" attributeType="String"/>
         <attribute name="notesID" optional="YES" attributeType="String"/>
-        <attribute name="noteTitle" optional="YES" attributeType="String"/>
+        <attribute name="notesTitle" optional="YES" attributeType="String"/>
     </entity>
 </model>

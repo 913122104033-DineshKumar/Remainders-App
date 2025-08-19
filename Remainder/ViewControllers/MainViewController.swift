@@ -1,28 +1,32 @@
 import UIKit
 import CoreData
 
+// Main Class
 class MainViewController: UIViewController
 {
     private var context: NSManagedObjectContext?
     
-    private var noteID: Int = 0
-    private var listID: Int = 1
-    
-    private lazy var mainStackView: UIStackView = UIStackView()
-    private lazy var tasksCollectionView: UICollectionView = {
+    private lazy var combinedCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 10
         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        
+
         collectionView.register(
             MenuViewCell.self,
             forCellWithReuseIdentifier: "MenuCell"
         )
+        collectionView.register(
+            ListCollectionViewCell.self,
+            forCellWithReuseIdentifier: "ListCell"
+        )
+        collectionView.register(
+            ReusableHeaderCell.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "ReusableHeaderCell")
         collectionView.backgroundColor = .clear
+        collectionView.alwaysBounceVertical = true
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
@@ -30,28 +34,6 @@ class MainViewController: UIViewController
     
     private lazy var remainderSearchBarController: UISearchController = UISearchController()
     private var remainderFetchController: NSFetchedResultsController<ListIem>?
-    
-    private lazy var firstRowStackView: UIStackView = UIStackView()
-    private lazy var secondRowStackView: UIStackView = UIStackView()
-    private lazy var thirdRowStackView: UIStackView = UIStackView()
-    
-    private lazy var myListsStackView: UIStackView = UIStackView()
-    
-    private lazy var myListsLabel: UILabel = UILabel()
-    
-    private var remainderTableView: UITableView = {
-        let tableView = UITableView()
-        
-        tableView.register(
-            ListCellView.self,
-            forCellReuseIdentifier: "ListCell"
-        )
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.rowHeight = 50
-        tableView.layer.cornerRadius = 10
-        
-        return tableView
-    }()
     
     private lazy var bottomButtonView: UIView = UIView()
     private lazy var addRemainderButton: UIButton = UIButton()
@@ -80,16 +62,13 @@ class MainViewController: UIViewController
         self.configureFetchController()
         self.configureSearchBar()
         self.configureCollectionView()
-        self.configureListTableView()
         self.setUIs()
         
         self.setRemainderList()
         
-        CoreModelHandler.fetchAllData(fetchController: self.remainderFetchController)
-        self.remainderTableView.reloadData()
-        
         DataUtils.taskCategories["All"]?.noOfTasks = self.getCountForAllTasks
-        self.tasksCollectionView.reloadData()
+        self.saveChanges()
+        self.combinedCollectionView.resignFirstResponder()
     }
     
     private func setNavBarButton()
@@ -103,25 +82,13 @@ class MainViewController: UIViewController
             target: self,
             action: #selector(goToEditPage)
         )
+        self.navigationItem.searchController = self.remainderSearchBarController
     }
     
     private func setUIs()
     {
-        self.navigationItem.searchController = self.remainderSearchBarController
         
-        self.view.addSubview(self.tasksCollectionView)
-        
-        self.myListsLabel = ViewUtils.prepareTextLabelView(
-            labelContent: "My Lists",
-            fontSize: 22,
-            color: .black,
-            isBold: true,
-            isFrame: false
-        )
-        
-        self.view.addSubview(myListsLabel)
-        
-        self.view.addSubview(self.remainderTableView)
+        self.view.addSubview(self.combinedCollectionView)
         
         self.bottomButtonView = ViewUtils.prepareView(
             cornerRadius: nil,
@@ -175,24 +142,16 @@ class MainViewController: UIViewController
         
         NSLayoutConstraint.activate([
             
-            self.tasksCollectionView.topAnchor.constraint(equalTo: safeLayout.topAnchor, constant: height * 0.02),
-            self.tasksCollectionView.leadingAnchor.constraint(equalTo: safeLayout.leadingAnchor, constant: width * 0.05),
-            self.tasksCollectionView.widthAnchor.constraint(equalToConstant: width * 0.9),
-            self.tasksCollectionView.heightAnchor.constraint(equalToConstant: height * 0.32),
-            
-            self.myListsLabel.topAnchor.constraint(equalTo: self.tasksCollectionView.bottomAnchor, constant: height * 0.02),
-            self.myListsLabel.leadingAnchor.constraint(equalTo: safeLayout.leadingAnchor, constant: width * 0.05),
-            
             self.bottomButtonView.topAnchor.constraint(equalTo: safeLayout.bottomAnchor, constant: -60),
             self.bottomButtonView.heightAnchor.constraint(equalToConstant: 70),
             self.bottomButtonView.leadingAnchor.constraint(equalTo: safeLayout.leadingAnchor),
             self.bottomButtonView.widthAnchor.constraint(equalToConstant: width),
             
-            self.remainderTableView.topAnchor.constraint(equalTo: self.myListsLabel.bottomAnchor, constant: height * 0.02),
-            self.remainderTableView.leadingAnchor.constraint(equalTo: safeLayout.leadingAnchor, constant: width * 0.05),
-            self.remainderTableView.widthAnchor.constraint(equalToConstant: width * 0.9),
-            self.remainderTableView.trailingAnchor.constraint(equalTo: safeLayout.trailingAnchor, constant: -(width * 0.02)),
-            self.remainderTableView.bottomAnchor.constraint(equalTo: self.bottomButtonView.topAnchor, constant: -10),
+            self.combinedCollectionView.topAnchor.constraint(equalTo: safeLayout.topAnchor, constant: height * 0.0001),
+            self.combinedCollectionView.leadingAnchor.constraint(equalTo: safeLayout.leadingAnchor, constant: width * 0.02),
+            self.combinedCollectionView.trailingAnchor.constraint(equalTo: safeLayout.trailingAnchor, constant: -(width * 0.03)),
+            self.combinedCollectionView.bottomAnchor.constraint(equalTo: self.bottomButtonView.topAnchor, constant: -(height * 0.001)),
+            self.combinedCollectionView.widthAnchor.constraint(equalToConstant: width * 0.9),
             
             self.addRemainderButton.leadingAnchor.constraint(equalTo: self.bottomButtonView.leadingAnchor, constant: width * 0.03),
             self.addRemainderButton.topAnchor.constraint(equalTo: self.bottomButtonView.topAnchor, constant: height * 0.02),
@@ -215,41 +174,30 @@ class MainViewController: UIViewController
         
         CoreModelHandler.saveChanges(context: context){
             let remainderList = ListIem(context: context)
-            remainderList.listID = "LISTS1"
+            remainderList.listID = "LISTS0"
             remainderList.listName = "Remainders"
             remainderList.notesIDs = []
         }
         
-        CoreModelHandler.fetchAllData(fetchController: self.remainderFetchController)
+        self.saveChanges()
         
         UserDefaults.standard.set(true, forKey: "HasRemainderSet")
     }
     
 }
-
+// Methods for MainViewController
 extension MainViewController
 {
-    
-    private func generateNoteID() -> String
-    {
-        self.noteID += 1
-        return "NOTES" + String(self.noteID)
-    }
-    
-    private func generateListID() -> String
-    {
-        self.listID += 1
-        return "LISTS" + String(self.listID)
-    }
-    
     @objc private func goToEditPage()
     {
-        self.navigationController?.pushViewController(EditPreferenceViewController(), animated: true)
+        let editViewController = EditPreferenceViewController()
+        editViewController.delegate = self
+        self.navigationController?.pushViewController(editViewController, animated: true)
     }
     
     @objc private func addRemainderAction()
     {
-        let addNotesViewController = AddNotesViewController()
+        let addNotesViewController = AddNotesViewController(notes: nil)
         addNotesViewController.delegate = self
         let navController = UINavigationController(rootViewController: addNotesViewController)
         
@@ -258,7 +206,7 @@ extension MainViewController
     
     @objc private func addListAction()
     {
-        let addListViewController = AddListViewController()
+        let addListViewController = AddListViewController(listItem: nil)
         addListViewController.delegate = self
         let navController = UINavigationController(rootViewController: addListViewController)
         
@@ -332,8 +280,8 @@ extension MainViewController
                 if item.listID == listID
                 {
                     item.notesIDs?.append(notesID)
+                    return
                 }
-                return
             }
         }
     }
@@ -351,7 +299,7 @@ extension MainViewController
         return count
     }
 }
-
+// Search Handling
 extension MainViewController: UISearchControllerDelegate, UISearchResultsUpdating
 {
     
@@ -367,119 +315,20 @@ extension MainViewController: UISearchControllerDelegate, UISearchResultsUpdatin
     
     func updateSearchResults(for searchController: UISearchController)
     {
+        guard let searchQuery = self.remainderSearchBarController.searchBar.text else { return }
         
-    }
-}
-
-extension MainViewController: NoteDelegate
-{
-    func receiveNotesData(_ noteTitle: String, _ noteContent: String, _ listID: String)
-    {
-        guard let context = self.context else { return }
-        
-        CoreModelHandler.saveChanges(context: context) {
-            let notes = Notes(context: context)
-            let noteID = self.generateNoteID()
-            notes.notesID = noteID
-            notes.noteTitle = noteTitle
-            notes.notes = noteContent
-            notes.listID = listID
-            self.addNotesToList(notesID: noteID, listID: listID)
-        }
-        
-        CoreModelHandler.fetchAllData(fetchController: self.remainderFetchController)
-        
-        self.remainderTableView.reloadData()
-        self.tasksCollectionView.reloadData()
-    }
-    
-    func receiveListData(_ listName: String)
-    {
-        guard let context = self.context else { return }
-        
-        CoreModelHandler.saveChanges(context: context) {
-            let listItem = ListIem(context: context)
-            listItem.listID = self.generateListID()
-            listItem.listName = listName
-            listItem.notesIDs = []
-        }
-        CoreModelHandler.fetchAllData(fetchController: self.remainderFetchController)
-        
-        self.remainderTableView.reloadData()
-    }
-}
-
-extension MainViewController: UITableViewDelegate, UITableViewDataSource
-{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        return self.remainderFetchController?.fetchedObjects?.count ?? 0
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = ListCellView()
-        
-        cell.listImage = ViewUtils.prepareImageView(
-            image: UIImage(systemName: "list.bullet.circle.fill"),
-            cornerRadius: 10,
-            color: .systemBlue,
-            isFrame: false
-        )
-        
-        if let listName = self.remainderFetchController?.object(at: indexPath).listName
+        if searchQuery.isEmpty
         {
-            cell.listName = ViewUtils.prepareTextLabelView(
-                labelContent: listName,
-                fontSize: 16,
-                color: .black,
-                isBold: true,
-                isFrame: false
-            )
-        }
-        
-        if let count = self.remainderFetchController?.object(at: indexPath).notesIDs?.count
+            self.remainderFetchController?.fetchRequest.predicate = nil
+            CoreModelHandler.fetchAllData(fetchController: self.remainderFetchController)
+        } else
         {
-            cell.countLabel = ViewUtils.prepareTextLabelView(
-                labelContent: String(count),
-                fontSize: 20,
-                color: .systemGray4,
-                isBold: true,
-                isFrame: false
-            )
-            
+            let searchPredicate = NSPredicate(format: "listName CONTAINS[cd] %@", searchQuery)
+            self.remainderFetchController?.fetchRequest.predicate = searchPredicate
+            CoreModelHandler.fetchAllData(fetchController: self.remainderFetchController)
         }
-        
-        cell.setListPageUI()
-        
-        return cell
-    }
+        self.combinedCollectionView.reloadData()
     
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool
-    {
-        
-        self.remainderTableView.deselectRow(at: indexPath, animated: true)
-        
-        return false
-    }
-    
-    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem]
-    {
-        let dragItem = UIDragItem(itemProvider: NSItemProvider())
-        dragItem.localObject = self.remainderFetchController?.object(at: indexPath)
-        
-        return [dragItem]
-    }
-    
-    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath)
-    {
-        
-    }
-    
-    private func configureListTableView()
-    {
-        self.remainderTableView.delegate = self
-        self.remainderTableView.dataSource = self
     }
 }
 
@@ -506,17 +355,115 @@ extension MainViewController: NSFetchedResultsControllerDelegate
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 {
+    func numberOfSections(in collectionView: UICollectionView) -> Int
+    {
+        return SectionType.allCases.count
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        return DataUtils.taskCategories.count
+        guard let currentSection = SectionType(rawValue: section) else { return 0 }
+        
+        switch(currentSection)
+        {
+            case .taskSection:
+                return DataUtils.taskCategories.filter{ key, value in value.canShow }.count
+            case .remainderListSection:
+                guard let sections = self.remainderFetchController?.sections else { return 0 }
+                return sections[0].numberOfObjects
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
+         guard let currentSection = SectionType(rawValue: indexPath.section) else { return UICollectionViewCell() }
+         switch(currentSection)
+         {
+              case .taskSection:
+             return self.getTaskViewCell(indexPath: indexPath)
+              case .remainderListSection:
+             return self.getRemainderViewCell(indexPath: indexPath)
+         }    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    {
+        guard let currentSection = SectionType(rawValue: indexPath.section) else { return CGSize.zero }
+         switch(currentSection)
+         {
+              case .taskSection:
+                  return CGSize(width: 170, height: 80)
+              case .remainderListSection:
+                  return CGSize(width: self.view.bounds.width * 0.9, height: 50)
+         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.combinedCollectionView.deselectItem(at: indexPath, animated: true)
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MenuCell", for: indexPath) as? MenuViewCell else { return UICollectionViewCell() }
+        guard let currentSection = SectionType(rawValue: indexPath.section) else { return }
+        switch(currentSection)
+        {
+        case .remainderListSection:
+            guard let list = self.remainderFetchController?.fetchedObjects?[indexPath.row],
+                  let name = list.listName,
+                  let ID = list.listID,
+                  let notesIDs = list.notesIDs
+            else { return }
+            
+            let showListViewController = ShowNotesOfListViewController(
+                listID: ID,
+                listName: name,
+                notesIDs: notesIDs
+            )
+            showListViewController.delegate = self
+            self.navigationController?.pushViewController(showListViewController, animated: true)
+            
+        case .taskSection:
+            break
+        }
         
-        let keys = Array(DataUtils.taskCategories.keys)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        guard let currentSection = SectionType(rawValue: section) else { return 0 }
+        
+        switch(currentSection)
+        {
+        case .taskSection:
+            return 10
+        case .remainderListSection:
+            return 10
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
+    {
+        guard let header = self.combinedCollectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ReusableHeaderCell", for: indexPath) as? ReusableHeaderCell else { return UICollectionReusableView() }
+        
+        header.configure()
+        
+        return header
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        guard let section = SectionType(rawValue: section) else { return CGSize.zero }
+        
+        switch(section)
+        {
+        case .taskSection:
+            return CGSize.zero
+        case .remainderListSection:
+            return CGSize(width: 30, height: 20)
+        }
+    }
+    
+    private func getTaskViewCell(indexPath: IndexPath) -> UICollectionViewCell
+    {
+        guard let cell = self.combinedCollectionView.dequeueReusableCell(withReuseIdentifier: "MenuCell", for: indexPath) as? MenuViewCell else { return UICollectionViewCell() }
+        
+        let keys = Array(DataUtils.taskCategories.filter{ key, value in value.canShow }.keys)
         let key = keys[indexPath.row]
         
         guard let category = DataUtils.taskCategories[key] else { return cell }
@@ -533,16 +480,69 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    private func getRemainderViewCell(indexPath: IndexPath) -> UICollectionViewCell
     {
-        return CGSize(width: 160, height: 80)
+        guard let cell = self.combinedCollectionView.dequeueReusableCell(withReuseIdentifier: "ListCell", for: indexPath) as? ListCollectionViewCell else { return UICollectionViewCell() }
+        
+        guard let list = self.remainderFetchController?.fetchedObjects?[indexPath.row],
+              let name = list.listName
+            else { return cell }
+        
+        let noOfTaks = list.notesIDs?.count ?? 0
+        
+        cell.configure(title: name, noOfTasks: String(noOfTaks))
+        
+        cell.setListPageUI()
+        
+        return cell
     }
     
     private func configureCollectionView()
     {
-        self.tasksCollectionView.dataSource = self
-        self.tasksCollectionView.delegate = self
+        self.combinedCollectionView.delegate = self
+        self.combinedCollectionView.dataSource = self
     }
     
+}
+
+// Delegate Handling
+extension MainViewController: NoteDelegate
+{
+    func receiveNotesData(_ noteTitle: String, _ noteContent: String, _ listID: String, _ notes: Notes?)
+    {
+        guard let context = self.context else { return }
+        
+        CoreModelHandler.saveChanges(context: context) {
+            let notes = Notes(context: context)
+            let noteID = DataUtils.generateNoteID()
+            notes.notesID = noteID
+            notes.notesTitle = noteTitle
+            notes.notes = noteContent
+            notes.listID = listID
+            self.addNotesToList(notesID: noteID, listID: listID)
+        }
+        
+        self.saveChanges()
+    }
+    
+    func receiveListData(_ listName: String, _ listObject: ListIem?)
+    {
+        guard let context = self.context else { return }
+        
+        CoreModelHandler.saveChanges(context: context) {
+            let listItem = ListIem(context: context)
+            listItem.listID = DataUtils.generateListID()
+            listItem.listName = listName
+            listItem.notesIDs = []
+        }
+        
+        self.saveChanges()
+    }
+    
+    func saveChanges()
+    {
+        CoreModelHandler.fetchAllData(fetchController: self.remainderFetchController)
+        self.combinedCollectionView.reloadData()
+    }
 }
 

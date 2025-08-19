@@ -6,4 +6,5 @@ struct TaskCategoryModel
     var noOfTasks: (() -> Int)?
     let iconName: String
     let iconColor: UIColor?
+    var canShow: Bool
 }

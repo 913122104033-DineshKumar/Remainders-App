@@ -2,12 +2,24 @@ import UIKit
 
 class AddListViewController: UIViewController
 {
+    private var listItem: ListIem?
     
-    open var delegate: NoteDelegate?
+    weak var delegate: NoteDelegate?
     
     private lazy var creationView: UIView = UIView()
     private lazy var showListImageView: UIImageView = UIImageView()
     private lazy var listNameField: UITextField = UITextField()
+    
+    init(listItem: ListIem?)
+    {
+        self.listItem = listItem
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        fatalError()
+    }
     
     override func viewDidLoad()
     {
@@ -71,6 +83,11 @@ class AddListViewController: UIViewController
         self.listNameField.becomeFirstResponder()
         self.creationView.addSubview(self.listNameField)
         
+        if let listName = self.listItem?.listName
+        {
+            self.listNameField.text = listName
+        }
+        
         self.setConstraints()
     }
     
@@ -106,11 +123,8 @@ extension AddListViewController
     {
         guard let title = self.listNameField.text else { return }
         
-        if !DataUtils.notMatches(pattern: "[a-zA-Z0-9/s]+", text: title)
-        {
-            self.delegate?.receiveListData(title)
-            self.dismiss(animated: true)
-        }
+        self.delegate?.receiveListData(title, listItem)
+        self.dismiss(animated: true)
     }
     
     @objc private func cancelAction()

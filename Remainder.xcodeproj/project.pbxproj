@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09F259BA2E4F28F80038D59F /* Notes+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F259B82E4F28F80038D59F /* Notes+CoreDataClass.swift */; };
-		09F259BB2E4F28F80038D59F /* Notes+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F259B92E4F28F80038D59F /* Notes+CoreDataProperties.swift */; };
 		09F259BC2E4F28F80038D59F /* Lists+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F259B62E4F28F80038D59F /* Lists+CoreDataClass.swift */; };
 		09F259BD2E4F28F80038D59F /* Lists+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F259B72E4F28F80038D59F /* Lists+CoreDataProperties.swift */; };
 		09F25A3B2E524B0C0038D59F /* ListIem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F25A392E524B0C0038D59F /* ListIem+CoreDataClass.swift */; };
 		09F25A3C2E524B0C0038D59F /* ListIem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F25A3A2E524B0C0038D59F /* ListIem+CoreDataProperties.swift */; };
+		09F25ABA2E531B520038D59F /* Notes+CoreDataProperties 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F25AB92E531B520038D59F /* Notes+CoreDataProperties 2.swift */; };
+		09F25ABB2E531B520038D59F /* Notes+CoreDataClass 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F25AB82E531B520038D59F /* Notes+CoreDataClass 2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,11 +38,11 @@
 		09F259722E4E0FD00038D59F /* RemainderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemainderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		09F259B62E4F28F80038D59F /* Lists+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Lists+CoreDataClass.swift"; sourceTree = "<group>"; };
 		09F259B72E4F28F80038D59F /* Lists+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Lists+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		09F259B82E4F28F80038D59F /* Notes+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notes+CoreDataClass.swift"; sourceTree = "<group>"; };
-		09F259B92E4F28F80038D59F /* Notes+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notes+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		09F25A302E522F460038D59F /* Remainder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Remainder.xcodeproj; sourceTree = SOURCE_ROOT; };
 		09F25A392E524B0C0038D59F /* ListIem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ListIem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		09F25A3A2E524B0C0038D59F /* ListIem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ListIem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		09F25AB82E531B520038D59F /* Notes+CoreDataClass 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notes+CoreDataClass 2.swift"; sourceTree = "<group>"; };
+		09F25AB92E531B520038D59F /* Notes+CoreDataProperties 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notes+CoreDataProperties 2.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -129,9 +129,9 @@
 				09F25A392E524B0C0038D59F /* ListIem+CoreDataClass.swift */,
 				09F259B62E4F28F80038D59F /* Lists+CoreDataClass.swift */,
 				09F259B72E4F28F80038D59F /* Lists+CoreDataProperties.swift */,
-				09F259B82E4F28F80038D59F /* Notes+CoreDataClass.swift */,
-				09F259B92E4F28F80038D59F /* Notes+CoreDataProperties.swift */,
 				09F25A3A2E524B0C0038D59F /* ListIem+CoreDataProperties.swift */,
+				09F25AB82E531B520038D59F /* Notes+CoreDataClass 2.swift */,
+				09F25AB92E531B520038D59F /* Notes+CoreDataProperties 2.swift */,
 			);
 			path = DataStores;
 			sourceTree = "<group>";
@@ -291,11 +291,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09F259BA2E4F28F80038D59F /* Notes+CoreDataClass.swift in Sources */,
-				09F259BB2E4F28F80038D59F /* Notes+CoreDataProperties.swift in Sources */,
 				09F259BC2E4F28F80038D59F /* Lists+CoreDataClass.swift in Sources */,
 				09F25A3B2E524B0C0038D59F /* ListIem+CoreDataClass.swift in Sources */,
 				09F25A3C2E524B0C0038D59F /* ListIem+CoreDataProperties.swift in Sources */,
+				09F25ABA2E531B520038D59F /* Notes+CoreDataProperties 2.swift in Sources */,
+				09F25ABB2E531B520038D59F /* Notes+CoreDataClass 2.swift in Sources */,
 				09F259BD2E4F28F80038D59F /* Lists+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

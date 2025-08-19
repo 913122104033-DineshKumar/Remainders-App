@@ -2,7 +2,12 @@ import UIKit
 
 class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
 {
-    open var delegate: NoteDelegate?
+    weak var delegate: NoteDelegate?
+    private var notes: Notes?
+    private var listItem: ListIem?
+    private var listID: String?
+    private var listName: String?
+    private var notesIDs: [String]?
     
     private lazy var notesCreationView: UIView = UIView()
     private lazy var listSelectionView: UIView = UIView()
@@ -15,6 +20,29 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
     private lazy var listLabel: UILabel = UILabel()
     private lazy var listNameLabel: UILabel = UILabel()
     private lazy var rightArrowImage: UIImageView = UIImageView()
+    
+    init(notes: Notes?)
+    {
+        self.notes = notes
+        self.listID = nil
+        self.listName = nil
+        self.notesIDs = nil
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(notes: Notes?, listID: String, listName: String, notesIDs: [String])
+    {
+        self.notes = notes
+        self.listID = listID
+        self.listName = listName
+        self.notesIDs = notesIDs
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        fatalError()
+    }
     
     override func viewDidLoad()
     {
@@ -104,12 +132,13 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
         self.listSelectionView.addSubview(self.listLabel)
         
         self.listNameLabel = ViewUtils.prepareTextLabelView(
-            labelContent: "Remainders",
+            labelContent: listName ?? "Remainders",
             fontSize: 16,
             color: .lightGray,
             isBold: true,
             isFrame: false
         )
+        self.listNameLabel.numberOfLines = 2
         self.listSelectionView.addSubview(self.listNameLabel)
         
         self.rightArrowImage = ViewUtils.prepareImageView(
@@ -122,7 +151,12 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
         
         self.listSelectionView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showListAction)))
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(goToAvailableListPage))
+        self.listSelectionView.addGestureRecognizer(tapGesture)
+        
         self.setConstraints()
+        
+        self.setDataIfEditing()
         
     }
     
@@ -169,7 +203,7 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
             self.listLabel.leadingAnchor.constraint(equalTo: self.listImage.trailingAnchor, constant: leadingSpace),
             self.listLabel.topAnchor.constraint(equalTo: self.listSelectionView.topAnchor, constant: 16),
             
-            self.listNameLabel.leadingAnchor.constraint(equalTo: self.listLabel.trailingAnchor, constant: leadingSpace * 6),
+            self.listNameLabel.leadingAnchor.constraint(equalTo: self.listSelectionView.trailingAnchor, constant: -120),
             self.listNameLabel.topAnchor.constraint(equalTo: self.listSelectionView.topAnchor, constant: 16),
             
             self.rightArrowImage.leadingAnchor.constraint(equalTo: self.listNameLabel.trailingAnchor, constant: 6),
@@ -185,22 +219,38 @@ class AddNotesViewController: UIViewController, UIGestureRecognizerDelegate
 extension AddNotesViewController
 {
     
+    @objc private func goToAvailableListPage()
+    {
+        let availableListViewController = ShowAvailableRemainderListsViewController()
+        availableListViewController.delegate = self
+        let navController = UINavigationController(rootViewController: availableListViewController)
+        self.present(navController, animated: true)
+    }
+    
+    private func setDataIfEditing()
+    {
+        guard let title = notes?.notesTitle,
+              let content = notes?.notes else { return }
+        
+        self.noteTitleField.text = title
+        self.noteContentView.text = content
+    }
+    
     @objc private func addRemainderAction()
     {
         guard let noteTitle = self.noteTitleField.text else { return }
         
-        if !DataUtils.notMatches(pattern: "[a-zA-Z0-9/s]+", text: noteTitle)
+        let content: String = self.noteContentView.text == "Notes" ? "" : self.noteContentView.text
+        
+        if let listID = self.listID
         {
-            let content: String = self.noteContentView.text == "Notes" ? "" : self.noteContentView.text
-            self.delegate?.receiveNotesData(noteTitle, content, "LISTS1")
-            self.dismiss(animated: true)
+            self.listLabel.text = self.listItem?.listName
+            self.delegate?.receiveNotesData(noteTitle, content, listID, notes)
         } else
         {
-            DataUtils.showToast(
-                message: "Title is invalid",
-                view: self.view
-            )
+            self.delegate?.receiveNotesData(noteTitle, content, "LISTS1", notes)
         }
+        self.dismiss(animated: true)
         
     }
     
@@ -299,4 +349,17 @@ extension AddNotesViewController: UITextViewDelegate
             self.noteContentView.textColor = .black
         }
     }
+}
+
+extension AddNotesViewController: NoteDelegate
+{
+    func receiveNotesData(_ noteTitle: String, _ noteContent: String, _ listID: String, _ notes: Notes?) {
+        
+    }
+    
+    func receiveListData(_ listName: String, _ listObject: ListIem?) {
+        self.listItem = listObject
+        self.listNameLabel.text = listName
+    }
+    
 }

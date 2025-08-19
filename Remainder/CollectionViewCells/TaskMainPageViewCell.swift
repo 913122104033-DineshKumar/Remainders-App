@@ -7,6 +7,15 @@ class MenuViewCell: UICollectionViewCell
     open var menuName: UILabel?
     open var menuNotesCountLabel: UILabel?
     
+    override init(frame: CGRect)
+    {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     public func configure(
         title: String,
@@ -15,6 +24,7 @@ class MenuViewCell: UICollectionViewCell
         iconColor: UIColor?
     )
     {
+        
         self.menuView = ViewUtils.prepareView(
             cornerRadius: 10,
             backgroundColor: .white,
@@ -39,7 +49,7 @@ class MenuViewCell: UICollectionViewCell
         self.menuName = ViewUtils.prepareTextLabelView(
             labelContent: title,
             fontSize: 16,
-            color: .systemGray4,
+            color: .lightGray,
             isBold: false,
             isFrame: false
         )
@@ -74,14 +84,14 @@ class MenuViewCell: UICollectionViewCell
             
             image.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
             image.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            image.widthAnchor.constraint(equalToConstant: 20),
-            image.heightAnchor.constraint(equalToConstant: 20),
+            image.widthAnchor.constraint(equalToConstant: 30),
+            image.heightAnchor.constraint(equalToConstant: 30),
             
             name.topAnchor.constraint(equalTo: image.bottomAnchor, constant: 10),
             name.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
         
             count.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            count.leadingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            count.leadingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
             
         ])
     }

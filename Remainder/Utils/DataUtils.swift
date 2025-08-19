@@ -5,11 +5,11 @@ class DataUtils
 {
     
     public static var taskCategories: [String: TaskCategoryModel] = [
-        "Today": TaskCategoryModel(title: "Today", noOfTasks: nil, iconName: "calendar.badge.plus", iconColor: .systemBlue),
-        "Scheduled": TaskCategoryModel(title: "Scheduled", noOfTasks: nil, iconName: "calendar.circle.fill", iconColor: .systemRed),
-        "All": TaskCategoryModel(title: "All", noOfTasks: nil, iconName: "tray.circle.fill", iconColor: nil),
-        "Flagged": TaskCategoryModel(title: "Flagged", noOfTasks: nil, iconName: "flag.circle.fill", iconColor: .systemYellow),
-        "Completed": TaskCategoryModel(title: "Completed", noOfTasks: nil, iconName: "checkmark.circle.fill", iconColor: .systemGreen)
+        "Today": TaskCategoryModel(title: "Today", noOfTasks: nil, iconName: "calendar.badge.plus", iconColor: .systemBlue, canShow: true),
+        "Scheduled": TaskCategoryModel(title: "Scheduled", noOfTasks: nil, iconName: "calendar.circle.fill", iconColor: .systemRed, canShow: true),
+        "All": TaskCategoryModel(title: "All", noOfTasks: nil, iconName: "tray.circle.fill", iconColor: .black, canShow: true),
+        "Flagged": TaskCategoryModel(title: "Flagged", noOfTasks: nil, iconName: "flag.circle.fill", iconColor: .systemYellow, canShow: true),
+        "Completed": TaskCategoryModel(title: "Completed", noOfTasks: nil, iconName: "checkmark.circle.fill", iconColor: .systemGreen, canShow: true)
     ]
     
     public static func notMatches(
@@ -58,6 +58,16 @@ class DataUtils
             label.removeFromSuperview()
         }
         
+    }
+    
+    public static func generateNoteID() -> String
+    {
+        return "NOTES" + UUID().uuidString
+    }
+    
+    public static func generateListID() -> String
+    {
+        return "LISTS" + UUID().uuidString
     }
     
 }
